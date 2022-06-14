@@ -25,12 +25,19 @@ app.get('*', (req, res) => {
       console.log('route match', route)
       const { loadData } = route.component
       if (loadData) {
+        // 包装后
+        // 规避报错 可以考虑加日志
+        // const promise = new Promise((resolve, reject) => {
+        //   loadData(store)
+        //     .then(resolve)
+        //     .catch(resolve)
+        // })
         promises.push(loadData(store))
       }
     }
   })
 
-  Promise.all(promises)
+  Promise.allSettled(promises)
     .then(data => {
       const content = renderToString(
         <Provider store={store}>
