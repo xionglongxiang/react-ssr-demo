@@ -3,6 +3,7 @@ import { renderToString } from 'react-dom/server'
 import { StaticRouter, matchPath, Route } from 'react-router-dom'
 const express = require('express')
 import routes from '../src/App'
+import proxy from 'http-proxy-middleware'
 import { Provider } from 'react-redux'
 import { getServerStore } from '../src/store/store'
 import Header from '../src/component/Header'
@@ -11,7 +12,13 @@ const store = getServerStore()
 const app = express()
 app.use(express.static('public'))
 
+// 客户端来的api开头的请求
+app.use('/api', proxy({ target: 'http://localhost:9090', changeOrigin: true }))
+
 app.get('*', (req, res) => {
+  // if (req.url.startsWith('/api/')) {
+  // }
+
   const promises = []
   // use `some` to imitate `<Switch>` behavior of selecting only
   // the first to match
