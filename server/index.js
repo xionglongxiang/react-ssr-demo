@@ -4,10 +4,10 @@ const express = require('express')
 import App from '../App'
 
 const app = express()
+app.use(express.static('public'))
 
 app.get('/', (req, res) => {
-  const Page = <App title='开课吧'></App>
-  const content = renderToString(Page)
+  const content = renderToString(App)
 
   res.send(`
     <html>
@@ -17,6 +17,7 @@ app.get('/', (req, res) => {
       </head>
       <body>
         <div id="root">${content}</div>
+        <script src="./bundle.js"></script>
       </body>
     </html>
   `)
