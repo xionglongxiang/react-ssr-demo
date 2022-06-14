@@ -22,44 +22,42 @@ app.get('*', (req, res) => {
     // use `matchPath` here
     const match = matchPath(req.path, route)
     if (match) {
+      console.log('route match', route)
       const { loadData } = route.component
       if (loadData) {
         promises.push(loadData(store))
       }
     }
-    return match
   })
 
   Promise.all(promises).then(data => {
-    console.log('data', data)
+    const content = renderToString(
+      <Provider store={store}>
+        <StaticRouter location={req.url}>
+          <Header></Header>
+          {routes.map(route => (
+            <Route {...route}></Route>
+          ))}
+        </StaticRouter>
+      </Provider>
+    )
+
+    res.send(`
+      <html>
+        <head>
+          <meta charset="utf-8" />
+          <title>react ssr</title>
+        </head>
+        <body>
+          <div id="root">${content}</div>
+          <script>
+            window.__context = ${JSON.stringify(store.getState())}
+          </script>
+          <script src="./bundle.js"></script>
+        </body>
+      </html>
+    `)
   })
-
-  const content = renderToString(
-    <Provider store={store}>
-      <StaticRouter location={req.url}>
-        <Header></Header>
-        {routes.map(route => (
-          <Route {...route}></Route>
-        ))}
-      </StaticRouter>
-    </Provider>
-  )
-
-  res.send(`
-    <html>
-      <head>
-        <meta charset="utf-8" />
-        <title>react ssr</title>
-      </head>
-      <body>
-        <div id="root">${content}</div>
-        <script>
-          window.__context = ${JSON.stringify(store.getState())}
-        </script>
-        <script src="./bundle.js"></script>
-      </body>
-    </html>
-  `)
 })
 
 app.listen(8080, () => {
