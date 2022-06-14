@@ -30,19 +30,20 @@ app.get('*', (req, res) => {
     }
   })
 
-  Promise.all(promises).then(data => {
-    const content = renderToString(
-      <Provider store={store}>
-        <StaticRouter location={req.url}>
-          <Header></Header>
-          {routes.map(route => (
-            <Route {...route}></Route>
-          ))}
-        </StaticRouter>
-      </Provider>
-    )
+  Promise.all(promises)
+    .then(data => {
+      const content = renderToString(
+        <Provider store={store}>
+          <StaticRouter location={req.url}>
+            <Header></Header>
+            {routes.map(route => (
+              <Route {...route}></Route>
+            ))}
+          </StaticRouter>
+        </Provider>
+      )
 
-    res.send(`
+      res.send(`
       <html>
         <head>
           <meta charset="utf-8" />
@@ -57,7 +58,10 @@ app.get('*', (req, res) => {
         </body>
       </html>
     `)
-  })
+    })
+    .catch(res => {
+      res.send('报错了')
+    })
 })
 
 app.listen(8080, () => {
