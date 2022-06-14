@@ -35,8 +35,8 @@ export default [
     component: User,
     exact: true,
     key: 'user'
+  },
+  {
+    component: Notfound
   }
-  // {
-  //   component: Notfound
-  // }
 ]

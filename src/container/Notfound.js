@@ -15,7 +15,6 @@ function Status ({ code, children }) {
 }
 
 function Notfound (props) {
-  // console.log('noutound',props)
   // 渲染了这个组件，给staticContext赋值， statuscode=404
   return (
     <Status code={404}>

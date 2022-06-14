@@ -1,6 +1,6 @@
 import React from 'react'
 import { renderToString } from 'react-dom/server'
-import { StaticRouter, matchPath, Route } from 'react-router-dom'
+import { StaticRouter, matchPath, Route, Switch } from 'react-router-dom'
 const express = require('express')
 import routes from '../src/App'
 import proxy from 'http-proxy-middleware'
@@ -46,16 +46,30 @@ app.get('*', (req, res) => {
 
   Promise.allSettled(promises)
     .then(data => {
+      const context = {}
+
       const content = renderToString(
         <Provider store={store}>
-          <StaticRouter location={req.url}>
+          <StaticRouter location={req.url} context={context}>
             <Header></Header>
-            {routes.map(route => (
-              <Route {...route}></Route>
-            ))}
+            <Switch>
+              {routes.map(route => (
+                <Route {...route}></Route>
+              ))}
+            </Switch>
           </StaticRouter>
         </Provider>
       )
+
+      if (context.statuscode) {
+        // 状态的切换和页面跳转
+        res.status(context.statuscode)
+      }
+      console.log('context', context)
+
+      if (context.action == 'REPLACE') {
+        res.redirect(301, context.url)
+      }
 
       res.send(`
       <html>
