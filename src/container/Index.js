@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 
-function App (props) {
+function Index (props) {
   const [count, setCount] = useState(0)
   return (
     <>
       <h1>
-        {props.title}!{count}
+        hello {props.title}!{count}
       </h1>
       <button
         onClick={() => {
@@ -17,5 +17,4 @@ function App (props) {
     </>
   )
 }
-
-export default <App title='开课吧'></App>
+export default Index
