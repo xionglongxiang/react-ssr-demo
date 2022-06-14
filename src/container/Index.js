@@ -36,10 +36,12 @@ function Index (props) {
   )
 }
 
+Index = connect(state => ({ list: state.index.list }), { getIndexList })(
+  withStyles(Index, styles)
+)
+
 Index.loadData = store => {
   return store.dispatch(getIndexList())
 }
 
-export default connect(state => ({ list: state.index.list }), { getIndexList })(
-  withStyles(Index, styles)
-)
+export default Index
