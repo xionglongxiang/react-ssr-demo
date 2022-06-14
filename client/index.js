@@ -1,5 +1,6 @@
 import React from 'react'
-import * as ReactDOM from 'react-dom/client'
+import { hydrate } from 'react-dom/client'
+import { createRoot } from 'react-dom/client'
 import routes from '../src/App'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { getClientStore } from '../src/store/store'
@@ -21,4 +22,9 @@ const Page = (
   </Provider>
 )
 
-ReactDOM.hydrateRoot(document.getElementById('root'), Page)
+if (!window.__context) {
+  const root = createRoot(document.getElementById('root'))
+  root.render(Page)
+} else {
+  hydrate(Page, document.getElementById('root'))
+}
