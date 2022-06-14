@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { getIndexList } from '../store/index'
 import styles from './Index.css'
+import withStyles from '../withStyle'
 
 function Index (props) {
   const [count, setCount] = useState(0)
@@ -40,5 +41,5 @@ Index.loadData = store => {
 }
 
 export default connect(state => ({ list: state.index.list }), { getIndexList })(
-  Index
+  withStyles(Index, styles)
 )
