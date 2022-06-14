@@ -59,7 +59,8 @@ app.get('*', (req, res) => {
       </html>
     `)
     })
-    .catch(res => {
+    .catch(err => {
+      console.log('err', err)
       res.send('报错了')
     })
 })
