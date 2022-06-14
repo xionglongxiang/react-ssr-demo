@@ -37,6 +37,7 @@ export default [
     key: 'user'
   },
   {
-    component: Notfound
+    component: Notfound,
+    key: 'notfound'
   }
 ]

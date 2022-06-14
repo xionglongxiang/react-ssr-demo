@@ -1,8 +1,13 @@
 import React from 'react'
+import path from 'path'
+import fs from 'fs'
+
 import { renderToString } from 'react-dom/server'
 import { StaticRouter, matchPath, Route, Switch } from 'react-router-dom'
 const express = require('express')
 import routes from '../src/App'
+import config from './config'
+
 import proxy from 'http-proxy-middleware'
 import { Provider } from 'react-redux'
 import { getServerStore } from '../src/store/store'
@@ -15,9 +20,26 @@ app.use(express.static('public'))
 // 客户端来的api开头的请求
 app.use('/api', proxy({ target: 'http://localhost:9090', changeOrigin: true }))
 
+function csrRender (res) {
+  const file = path.resolve(process.cwd(), 'public/index.csr.html')
+  let html = fs.readFileSync(file, 'utf-8')
+  return res.send(html)
+}
+
 app.get('*', (req, res) => {
   // if (req.url.startsWith('/api/')) {
   // }
+  // 存储网络请求
+  if (req.query._mode === 'csr') {
+    console.log('路由控制客户端渲染')
+    return csrRender(res)
+    // err.code==500
+    // cpu or内存占比 降级
+  }
+  if (config.csr) {
+    console.log('csr全局开关打开')
+    return csrRender(res)
+  }
 
   const promises = []
   // use `some` to imitate `<Switch>` behavior of selecting only
