@@ -1,19 +1,47 @@
 import React from 'react'
 import { renderToString } from 'react-dom/server'
-import { StaticRouter } from 'react-router-dom'
+import { StaticRouter, matchPath, Route } from 'react-router-dom'
 const express = require('express')
-import App from '../src/App'
+import routes from '../src/App'
 import { Provider } from 'react-redux'
-import store from '../src/store/store'
-console.log('server import store', store)
+import { getServerStore } from '../src/store/store'
+import Header from '../src/component/Header'
 
+const store = getServerStore()
 const app = express()
 app.use(express.static('public'))
 
 app.get('*', (req, res) => {
+  const promises = []
+  // use `some` to imitate `<Switch>` behavior of selecting only
+  // the first to match
+  routes.some(route => {
+    const match = matchPath(req.path, route)
+  })
+  routes.some(route => {
+    // use `matchPath` here
+    const match = matchPath(req.path, route)
+    if (match) {
+      const { loadData } = route.component
+      if (loadData) {
+        promises.push(loadData(store))
+      }
+    }
+    return match
+  })
+
+  Promise.all(promises).then(data => {
+    console.log('data', data)
+  })
+
   const content = renderToString(
     <Provider store={store}>
-      <StaticRouter location={req.url}>{App}</StaticRouter>
+      <StaticRouter location={req.url}>
+        <Header></Header>
+        {routes.map(route => (
+          <Route {...route}></Route>
+        ))}
+      </StaticRouter>
     </Provider>
   )
 
@@ -25,6 +53,9 @@ app.get('*', (req, res) => {
       </head>
       <body>
         <div id="root">${content}</div>
+        <script>
+          window.__context = ${JSON.stringify(store.getState())}
+        </script>
         <script src="./bundle.js"></script>
       </body>
     </html>
