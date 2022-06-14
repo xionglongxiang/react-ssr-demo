@@ -1,5 +1,5 @@
 import React from 'react'
-import { hydrate } from 'react-dom/client'
+import { hydrateRoot } from 'react-dom/client'
 import { createRoot } from 'react-dom/client'
 import routes from '../src/App'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
@@ -26,5 +26,5 @@ if (!window.__context) {
   const root = createRoot(document.getElementById('root'))
   root.render(Page)
 } else {
-  hydrate(Page, document.getElementById('root'))
+  hydrateRoot(document.getElementById('root'), Page)
 }

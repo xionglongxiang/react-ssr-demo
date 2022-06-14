@@ -1,4 +1,4 @@
 const config = {
-  csr: true
+  csr: false
 }
 export default config

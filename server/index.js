@@ -68,7 +68,9 @@ app.get('*', (req, res) => {
 
   Promise.allSettled(promises)
     .then(data => {
-      const context = {}
+      const context = {
+        css: []
+      }
 
       const content = renderToString(
         <Provider store={store}>
@@ -82,6 +84,7 @@ app.get('*', (req, res) => {
           </StaticRouter>
         </Provider>
       )
+      const css = context.css.length ? context.css.join('\n') : '' // css 服务器端渲染
 
       if (context.statuscode) {
         // 状态的切换和页面跳转
@@ -98,6 +101,10 @@ app.get('*', (req, res) => {
         <head>
           <meta charset="utf-8" />
           <title>react ssr</title>
+
+          <style>
+          ${css}
+          </style>
         </head>
         <body>
           <div id="root">${content}</div>
