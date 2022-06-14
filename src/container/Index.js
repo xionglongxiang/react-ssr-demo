@@ -14,7 +14,7 @@ function Index (props) {
   }, [])
 
   return (
-    <>
+    <div className={styles.container}>
       <h1 className={styles.title}>
         哈喽 {props.title} ! {count}
       </h1>
@@ -32,7 +32,7 @@ function Index (props) {
           <li key={item.id}>{item.name}</li>
         ))}
       </ul>
-    </>
+    </div>
   )
 }
 
